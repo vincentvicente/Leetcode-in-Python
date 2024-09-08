@@ -549,12 +549,179 @@ def isSymmetric(self, root):
 
     return True
 
+
 """
 LC 定义：根节点深度从1开始
 前序
 """
+
+
 def maxDepthOfBinaryTree(root):
     if not root:
         return 0
 
+    leftDepth = maxDepthOfBinaryTree(root.left)
+    rightDepth = maxDepthOfBinaryTree(root.right)
+    res = max(leftDepth, rightDepth) + 1
+    return res
+
+
+def findDiameterTree(self, root):
+    self.res = 0  # 初始化最大直径为 0
+
+    # 递归遍历树节点，计算每个节点的直径，并更新全局最大直径
+    def traverse(node):
+        if not node:
+            return 0
+
+        # 递归计算左右子树的最大深度
+        leftMax = maxDepth(node.left)
+        rightMax = maxDepth(node.right)
+
+        # 计算当前节点的直径（左右子树深度之和）
+        myDiameter = leftMax + rightMax
+
+        # 更新全局最大直径
+        self.res = max(self.res, myDiameter)
+
+        # 继续遍历左右子树
+        traverse(node.left)
+        traverse(node.right)
+
+    # 计算树的深度
+    def maxDepth(root):
+        if not root:
+            return 0
+
+        # 递归计算左子树和右子树的深度
+        leftMax = maxDepth(root.left)
+        rightMax = maxDepth(root.right)
+
+        # 返回当前节点的深度
+        return 1 + max(leftMax, rightMax)
+
+    # 从根节点开始遍历
+    traverse(root)
+
+    # 返回全局最大直径
+    return self.res
+
+
+def inOrder(root):
+    # 记录遍历过的元素
+    stack = []
+    # 指针
+    cur = root
+    res = []
+    while stack or cur:
+        while cur:
+            stack.append(cur)
+            cur = cur.left
+        # left leaf node
+        cur = stack.pop()
+        res.append(cur.val)
+        cur = cur.right
+
+    return res
+
+
+def preOrder(root):
+    stack, res = [root], []
+    while stack:
+        node = stack.pop()
+        res.append(node.val)
+        if node.right:
+            stack.append(node.right)
+
+        if node.left:
+            stack.append(node.left)
+
+    return res
+
+
+def postOrder(root):
+    stack, res = [root], []
+    while stack:
+        node = stack.pop()
+        res.append(node.val)
+        if node.right:
+            stack.append(node.right)
+        if node.left:
+            stack.append(node.left)
+
+    return res[::-1]
+
+
+def printOutPaths(self, root):
+    def traverse(node, path, res):
+        if not node:
+            return
+
+        path += str(node.val)
+
+        if not node.left and not node.right:
+            res.append(path)
+            return
+
+        path += "->"
+        traverse(node.left, path, res)
+        traverse(node.right, path, res)
+
+    res = []
+    traverse(root, "", res)
+    return res
+
+
+def findModes(root):
+    if not root:
+        return []
+
+    traversal = []
+
+    def traverse(node):
+        nonlocal traversal
+        if not node:
+            return
+        traversal.append(node.val)
+        traverse(node.left)
+        traverse(node.right)
+
+    traverse(root)
+    mp = collections.Counter(traversal)
+    arr = list(mp.items())
+    arr = sorted(arr, key=lambda x: x[1], reverse=True)
+    res = []
+    max_cnt = arr[0][1]
+    i = 0
+    while i < len(arr):
+        if arr[i][1] == max_cnt:
+            res.append(arr[i][0])
+            i += 1
+        else:
+            break
+
+    return res
+
+
+def lowestCommonAncestorBinary(self, root, p, q):
+    # 叶子节点
+    if not root:
+        return None
+
+    if root == p or root == q:
+        return root
+
+    left = self.lowestCommonAncestorBinary(root.left, p, q)
+    right = self.lowestCommonAncestorBinary(root.right, p, q)
+
+    if left and right:
+        return root
+
+    if left and not right:
+        return left
+
+    if not left and right:
+        return right
+
+    return None
 

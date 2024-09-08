@@ -166,3 +166,106 @@ def findOrder(numCourses: int, prerequisites: List[List[int]]) -> List[int]:
             return []
 
     return res
+
+
+"""
+No duplicate in nums
+"""
+
+
+def subset(self, nums):
+    self.res = []
+
+    def backtrack(path, start):
+        self.res.append(path[:])
+        for i in range(start, len(nums)):
+            path.append(nums[i])
+            backtrack(path, i + 1)
+            path.pop()
+
+    path = []
+    backtrack(path, 0)
+    return self.res
+
+
+def combinationSum2(self, candidates: List[int], target: int) -> List[List[int]]:
+    self.res = []
+    candidates.sort()
+
+    def backtrack(curSum, path, start):
+        if curSum == target:
+            self.res.append(path.copy())
+
+        for i in range(start, len(candidates)):
+            if curSum > target:
+                break
+
+            if i > start and candidates[i - 1] == candidates[i]:
+                continue
+
+            path.append(candidates[i])
+            backtrack(curSum + candidates[i], path, i + 1)
+            path.pop()
+
+    path = []
+    backtrack(0, path, 0)
+    return self.res
+
+
+"""
+nums中元素不重复，全排列
+"""
+
+
+def permutation(self, nums):
+    self.res = []
+
+    def backtrack(path, visit):
+        if len(path) == len(nums):
+            self.res.append(path[:])
+            return
+
+        for i in range(len(nums)):
+            if nums[i] in visit:
+                continue
+
+            path.append(nums[i])
+            visit.add(nums[i])
+            backtrack(path, visit)
+            path.pop()
+            visit.remove(nums[i])
+
+    path = []
+    visit = set()
+    backtrack(path, visit)
+    return self.res
+
+"""
+存在重复元素，全排列
+"""
+def permutation2(self, nums):
+    self.res = []
+    self.used = [False] * len(nums)
+    nums.sort()
+
+    def backtrack(path):
+        if len(path) == len(nums):
+            self.res.append(path)
+
+        for i in range(len(nums)):
+            if self.used[i]:
+                continue
+
+            if i > 0 and nums[i] == nums[i - 1] and not self.used[i - 1]:
+                continue
+
+            path.append(nums[i])
+            self.used[i] = True
+            backtrack(path)
+            path.pop()
+            self.used[i] = False
+
+    path = []
+    backtrack(path)
+    return self.res
+
