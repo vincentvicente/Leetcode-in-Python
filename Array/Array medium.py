@@ -6,6 +6,8 @@ from typing import List
 py中数组是动态数组，自动调整大小
 注意：删除数组中的元素，需要动态调整覆盖，使得被删除的元素后所有的元素往前调整
 """
+
+
 class Array:
     def __init__(self):
         self.size = 0
@@ -288,3 +290,78 @@ def trimSpaces(self, s):
         l += 1
 
     return res
+
+
+class NoSuchElementException:
+    pass
+
+
+class DynamicArray:
+    INIT_CAP = 1
+
+    # size:底层数组大小，cap:当前数组大小
+    def __init__(self, init_capacity=None):
+        self.data = [None] * (init_capacity if init_capacity is not None else self.__class__.INIT_CAP)
+        self.size = 0
+
+    def add_last(self, e):
+        cap = len(self.data)
+        if self.size == cap:
+            self._resize(2 * cap)
+
+        self.data[self.size] = e
+        self.size += 1
+
+    def add(self, index, e):
+        self._check_position_index(index)
+
+        cap = len(self.data)
+        if self.size == cap:
+            self._resize_(2 * cap)
+
+        for i in range(self.size - 1, index - 1, -1):
+            self.data[i + 1] = self.data[i]
+
+        self.data[index] = e
+        self.size += 1
+
+    def add_first(self, e):
+        self.add(0, e)
+
+    def remove_last(self):
+        if self.size == 0:
+            raise NoSuchElementException
+        cap = len(self.data)
+        if self.size == cap // 4:
+            self._resize_(cap // 2)
+
+        deleted_val = self.data[self.size - 1]
+        self.data[self.size - 1] = None
+        self.size -= 1
+
+        return deleted_val
+
+    def remove(self, index):
+        self._check_element_index(index)
+
+        cap = len(self.data)
+        if self.size == cap // 4:
+            self._resize(cap // 2)
+
+        deleted_val = self.data[index]
+
+        for i in range(index + 1, self.size):
+            self.data[i - 1] = self.data[i]
+
+        self.data[self.size - 1] = None
+        self.size -= 1
+
+        return deleted_val
+
+    def remove_first(self):
+        return self.remove(0)
+
+    def get(self, index):
+        self._check_element_index(index)
+
+        return self.data[index]

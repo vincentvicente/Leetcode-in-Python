@@ -2,6 +2,8 @@ from typing import List
 
 """ while loop: l <= r, when there are odd number of elements, l might be = r
 """
+
+
 ## 核心：每次减少一半的筛选量，O(logn)
 
 
@@ -122,8 +124,6 @@ class solution:
         return [-1, -1]
 
 
-
-
 """
 给定两个sorted数组，在O(log min(m, n))的时间复杂度下返回中位数，空间复杂度为常数
 """
@@ -148,14 +148,47 @@ def findMedianSortedArrays(nums1: List[int], nums2: List[int]) -> float:
         Bleft = B[j] if j >= 0 else float("-infinity")
         Bright = B[j + 1] if (j + 1) < len(B) else float("infinity")
 
-    ## 如果满足条件，则对数组长度和进行判断是否为奇数或偶数
+        ## 如果满足条件，则对数组长度和进行判断是否为奇数或偶数
         if Aleft <= Bright and Bleft <= Aright:
             if total % 2:
                 return min(Aright, Bright)
             return (max(Aleft, Bleft) + min(Aright, Bright)) / 2
 
-    ## 如果不满足条件，则进行指针的移动
+        ## 如果不满足条件，则进行指针的移动
         elif Aleft > Bright:
             r = i - 1
         else:
             l = i + 1
+
+
+def maxValue(self, n: int, index: int, maxSum: int) -> int:
+    def calculateSum(maxVal):
+        # left portion
+        if (index + 1) > maxVal:
+            leftSum = ((1 + maxVal) * maxVal) // 2 + (index + 1 - maxVal)
+
+        else:
+            leftSum = (maxVal - index + maxVal) * (index + 1) // 2
+
+        # right portion
+        if (n - index) > maxVal:
+            rightSum = (maxVal + 1) * maxVal // 2 + (n - index - maxVal)
+
+        else:
+            rightSum = (maxVal + (maxVal - (n - 1 - index))) * (n - index) // 2
+
+        totalSum = leftSum + rightSum - maxVal
+        return totalSum
+
+    ## 当发现符合条件的maxVal时候，仍然要继续二分法，力求最大值。当最后一次合法操作后，继续二分法，此时l = maxVal + 1, l > r，跳出循环，
+    ## 此时的r依然保留着最后一次合法操作的值，为最大值。
+    l, r = 1, maxSum
+    while l <= r:
+        maxVal = (l + r) // 2
+        if calculateSum(maxVal) > maxSum:
+            r = maxVal - 1
+
+        else:
+            l = maxVal + 1
+
+    return r
