@@ -183,6 +183,7 @@ def threeSum(self, nums):
 
     return res
 
+
 def judgeAnagrams(self, s, t):
     if len(s) != len(t):
         return False
@@ -200,6 +201,7 @@ def judgeAnagrams(self, s, t):
 
     return True
 
+
 def fourSumCount(self, A: List[int], B: List[int], C: List[int], D: List[int]) -> int:
     res = 0
     mp = {}
@@ -214,18 +216,22 @@ def fourSumCount(self, A: List[int], B: List[int], C: List[int], D: List[int]) -
 
     return res
 
+
 class ListNode:
-    def __init__(self, val = 0, next = None):
+    def __init__(self, val=0, next=None):
         self.val, self.next = val, next
+
 
 """
 思维卡壳点：创建好哈希表后，如何跳过连续和为0的节点
 误区：不能直接从哈希表的val里面操作
 从头遍历
 """
+
+
 def delConsecutiveZeroSum(self, head):
     dummy = ListNode(0, head)
-    mp = {0: dummy} # prefixSum -> node
+    mp = {0: dummy}  # prefixSum -> node
     cur = head
     prefixSum = 0
     while cur:
@@ -244,3 +250,92 @@ def delConsecutiveZeroSum(self, head):
         cur = cur.next
 
     return dummy.next
+
+
+class KVNode:
+    def __init__(self, key, val):
+        self.key, self.val = key, val
+
+
+class ChainingHashMap:
+    def __init__(self, capacity):
+        self.table = [None] * capacity
+
+    def hash(self, key):
+        return key % len(self.table)
+
+    def get(self, key):
+        index = self.hash(key)
+
+        if self.table[index] is None:
+            return -1
+
+        list = self.table[index]
+        for node in list:
+            if node.key == key:
+                return node.val
+
+    def put(self, key, val):
+        index = self.hash(key)
+
+        if self.table[index] is None:
+            self.table[index] = []
+            self.table[index].append(KVNode(key, val))
+            return
+
+        list_ = self.table[index]
+        for node in list_:
+            if node.key == key:
+                node.val = val
+                return
+
+        list_.append(KVNode(key, val))
+
+    def remove(self, key):
+        index = self.hash(key)
+
+        list_ = self.table[index]
+        if list_ is None:
+            return
+
+        list_[:] = [node for node in list_ if node.key != key]
+
+
+class LinearProbingHashMap:
+    def __init__(self):
+        self.table = [None] * 10
+
+    def hash(self, key):
+        return key % len(self.table)
+
+    def put(self, key, val):
+        index = self.hash(key)
+        node = self.table[index]
+        if node is None:
+            self.table[index] = KVNode(key, val)
+        else:
+            while index < len(self.table) and self.table[index] is not None and self.table[index].key != key:
+                index += 1
+            self.table[index] = KVNode(key, val)
+
+    def get(self, key):
+        index = self.hash(key)
+
+        while index < len(self.table) and self.table[index] is not None and self.table[index].key != key:
+            index += 1
+
+        if self.table[index] is None:
+            return -1
+
+        return self.table[index].val
+
+    def remove(self, key):
+        index = self.hash(key)
+
+        while index < len(self.table) and self.table[index] is not None and self.table[index].key != key:
+            index += 1
+
+        if self.table[index] is None:
+            return
+
+        self.table[index] = None

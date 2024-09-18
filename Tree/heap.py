@@ -16,6 +16,8 @@ heapq.heapify(x)
 import collections
 import heapq
 
+## 思维：直接 -> Counter 后排序，O(nlogn)
+## min_heap - > 维持堆中只有k个元素，排序方式（Cnt）
 
 def kMostFrquentNums(self, nums, k):
     if len(nums) == 1:

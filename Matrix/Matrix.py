@@ -102,3 +102,9 @@ def matrixScore(grid):
 
     return res
 
+"""
+生成 n * n的矩阵
+"""
+def generateMatrix(n):
+    maxtrix = [i for i in range(n)] * n # 错误：生成的还是一维数组
+    maxtrix = [[i for i in range(n)] for _ in range(n)]

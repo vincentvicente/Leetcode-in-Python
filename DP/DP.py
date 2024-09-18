@@ -137,7 +137,7 @@ such that there are exactly k inverse pairs. Since the answer can be huge, retur
 
 def kInversePairs(self, n: int, k: int) -> int:
     MOD = 10 ** 9 + 7
-    cache = {} # (n, k) -> count
+    cache = {}  # (n, k) -> count
 
     def count(n, k):
         if n == 0:
@@ -156,4 +156,77 @@ def kInversePairs(self, n: int, k: int) -> int:
         return cache[(n, k)]
 
     return count(n, k)
+
+
+"""
+机器人在m*n的grid中行走，只能向右或者向下，求从左上到右下共有多少种走法
+二维数组dp
+"""
+
+
+def uniquePaths(self, m: int, n: int) -> int:
+    # create two-dimensional array
+    dp = [[1] * n for _ in range(m)]
+
+    for r in range(m):
+        for c in range(n):
+            dp[r][c] = dp[r - 1][c] + dp[r][c - 1]
+
+    return dp[m - 1][n - 1]
+
+
+## 优化1:从二维到一维
+
+## 数论：左上到右下一共要走 m + n - 2步。向下：m - 1步
+
+"""
+网格中存在障碍，无法通过障碍
+"""
+
+
+def uniquePaths2(self, grid):
+    ROWS, COLS = len(grid), len(grid[0])
+    dp = [[0] * len(COLS) for _ in range(ROWS)]
+
+    for r in range(ROWS):
+        if grid[r][0] == 0:
+            dp[r][0] = 1
+
+        else:
+            break
+
+    for c in range(COLS):
+        if grid[0][c] == 0:
+            dp[0][c] = 1
+
+        else:
+            break
+
+    for r in range(1, ROWS):
+        for c in range(1, COLS):
+            if grid[r][c] == 1:
+                continue
+
+            else:
+                dp[r][c] = dp[r - 1][c] + dp[r][c - 1]
+
+    return dp[ROWS - 1][COLS - 1]
+
+def maximizeProduct(n):
+    if n == 2:
+        return 1
+
+    if n == 3:
+        return 2
+
+    if n == 4:
+        return 4
+
+    res = 1
+    while n > 4:
+        res *= 3
+        n -= 3
+
+    res *= n
+    return n
 
